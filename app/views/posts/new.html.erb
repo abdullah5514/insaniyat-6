@@ -1,0 +1,312 @@
+<script>
+$(document).ready(function() 
+{
+	$("#post-upload").on('change', function() 
+	{
+		//Get count of selected files
+		var countFiles = $(this)[0].files.length;
+		var imgPath = $(this)[0].value;
+		var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+		var image_holder = $("#postImage-holder");
+		image_holder.empty();
+		if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") 
+		{
+			if (typeof(FileReader) != "undefined") 
+			{
+				//loop for each file selected for uploaded.
+				for (var i = 0; i < countFiles; i++) 
+				{
+					var reader = new FileReader();
+					reader.onload = function(e) 
+					{
+						$('#p').attr('src' , e.target.result);
+					}
+					image_holder.show();
+					reader.readAsDataURL($(this)[0].files[i]);
+				}
+			} 
+			else 
+			{
+				alert("This browser does not support FileReader.");
+			}
+		}
+		else 
+		{
+			alert("Please Image file only");
+		}
+	});
+
+
+
+
+$("#searchImage-upload").on('change', function() {
+	//Get count of selected files
+	var countFiles = $(this)[0].files.length;
+	var imgPath = $(this)[0].value;
+	var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+	var image_holder = $("#searchImage-holder");
+	image_holder.empty();
+	if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+		if (typeof(FileReader) != "undefined") {
+			//loop for each file selected for uploaded.
+			for (var i = 0; i < countFiles; i++) 
+			{
+				var reader = new FileReader();
+				reader.onload = function(e) {
+				$("<img />", {
+					"src": e.target.result,
+					"class": "thumb-image",
+					"width": "100px",
+					"height":"100px"
+					}).appendTo(image_holder);
+				}
+				image_holder.show();
+				reader.readAsDataURL($(this)[0].files[i]);
+			}
+		} else {
+			alert("This browser does not support FileReader.");
+		}
+	} else {
+			alert("Please Image file only");
+	}
+	});
+});
+</script>
+<!-- *************************************** New Post Bar *******************************************-->
+<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-default" style="background:#A1887F;">
+			<div class="panel-heading">Make a Post</div>
+				<div class="panel-body" id="panel_home_images" style="overflow-y: scroll hidden;">
+					<%= form_for @post, html: { multipart: true } do |f| %>
+						<center><h4 class="prompt">Detail of Person You found/lost<h4></center>
+						<div class="row">
+							<div class="col-md-4" id="postStatus">
+								<center>
+									<%= f.label "Your Status", { class:"postHeading"} %>
+								</center>
+								<%= f.radio_button :status, "lost" %>
+								<%= f.label :status, "You Lost Someone?", :value => "lost" %>
+								<br>
+								<%= f.radio_button :status, "found" %>
+								<%= f.label :status, "You Found Someone?", :value => "found" %>
+								<br class="brHeight">
+								<%= f.label :place, "Where did You lost/found the person?", { id:"place", class:"postHeading"} %>
+								<br>
+								<%= f.text_field :place, {class:"form-control" , placeholder:"Enter Place here", id:"placeText" }%>
+							</div>
+							<div class="col-md-4">
+							  <%= f.label :datetime, "When did You lost/found the person? Specify date.", class:"postHeading" %>
+							  <br>
+							  <%= f.date_select :clothes, {}, {class:"form-control", style:"margin-top:11px;margin-bottom:11px;"} %>
+							</div>
+							<div class="col-md-4">
+								<center>
+									<%= f.label "Provide picture of person You lost/found with clear face.", { class:"postHeading"} %>
+								</center>
+									<div class="container-fluid" id="postImage-holder" class="img-thumbnail">
+										<center>
+											<img src="/images/Unknown_Person.png" class="img-thumbnail" style="width:115px;height:92px;" id="p"/>
+										</center>
+									</div>
+									<%= f.file_field :image, accept: 'image/*', id:"post-upload", type:"file", class:"btn-success fileinput-button"%>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-4">
+								<%= f.label :city, "In which city You lost/found the person?", id:"city",class:"postHeading"%>
+								<br>
+								<%= f.select :city, ["Select City", "Ahmed Nager Chatha","Ali Khan Abad","Alipur Chatha", "Arifwala","Attock","Bhera","Bhalwal","Bahawalnagar","Bahawalpur","Bhakkar","Burewala","Chakwal","Chichawatni","Chiniot","Chunian","Daska","Dera Ghazi Khan","Faisalabad","Gojra","Gujranwala","Gujar Khan","Hafizabad","Jaranwala","Jhang","Jhelum","Kasur","Kamoke","Khanewal","Khanpur","Lahore","Islamabad","Lalamusa","Layyah","Chakwal","Mandi Bahauddin","Mian Channu","Mianwali","Multan","Murree","Muridke","Muzaffargarh","Narowal","Nankana Sahib","Okara","Rahim Yar Khan","Rawalpindi","Sadiqabad","Sahiwal","Samundri","Sargodha","Sheikhupura","Sialkot","Toba Tek Singh","Wazirabad"],{}, {class:"form-control", id:"cityText"} %>	
+							</div>
+							<div class="col-md-4">
+								<%= f.label :name, "Do You know the person's name? (If not, this field can be skip)", class:"postHeading" %>
+								<br>
+								<%= f.text_field :name, class:"form-control", placeholder:"Enter name here"%>
+							</div>
+							<div class="col-md-4">
+								<%= f.label :fathername, "Do You know the person's father name? (If not, this field can be skip)", class:"postHeading" %>
+								<br>
+								<%= f.text_field :fathername, class:"form-control" , placeholder:"Enter Father's name here"%>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<%= f.label :age, "Do You know person's age? Select appropriate age of person", class:"postHeading" %>
+								<br>
+								<%= f.select :age, ["Select age","1-5 Years","6-10 Years","11-15 Years","16-20 Years","21-25 Years","26-30 Years","31-35 Years","36-40 Years","41-45 Years","46-50 Years","50+ Years"],{}, {class:"form-control", id:"ageText"} %>
+							</div>
+							<div class="col-md-4">
+								<%= f.label :mentalstatus, "Is the He/She special person (Mentally stable or not). If You don't know this field can be skip.", class:"postHeading" %>
+								<br>
+								<%= f.select :mentalstatus, ["Select Mental Status","Normal Person", "Special Person"], {}, {class:"form-control", id:"mentalText"}%>
+							</div>
+							<div class="col-md-4">
+							  <%= f.label :clothes, "Select person's clothes. (If You don't want to mention this field can be skip)", class:"postHeading" %>
+							  <br>
+							  <%= f.select :clothes, ['Select Clothes','Pant Shirt','Trouser Shirt','Shalwar Qameez' ], {}, {class:"form-control", id:"clothesText"} %>
+							</div>
+						</div>
+							<div class="row">
+								<div class="col-md-4">
+									<%= f.label :clothescolor, "Mention person's clothes color. (If You don't want to mention this field can be skip)", class:"postHeading" %>
+									<br>
+									<%= f.text_field :clothescolor, class:"form-control" , placeholder:"Enter clothes color here"%>
+								</div>
+								<div class="col-md-8">
+									<%= f.label :description, "Any addtional description You want to enter about the person You lost/found? (If You don't want to mention this field can be skip)", class:"postHeading"%>
+									<br>
+									<%= f.text_area :description, class:"form-control" , placeholder:"Enter Description Here"%>
+								</div>
+							</div>
+							<br>
+							<div class="row">									
+								<div class="col-md-4">
+									<%= label_tag(:contact, "Contact Number") %>
+									<br>
+									<%= f.text_field :contact, class:"form-control" , placeholder:"Enter Contact Number"%>
+								</div>
+									<div class="col-md-4">
+										<%= label_tag(:personcolor, "Person's Color") %>
+										<br>
+										<%= f.text_field :personcolor, class:"form-control" , placeholder:"Enter Person's Color"%>
+									</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<%= f.submit %>
+								</div>
+								
+							</div>
+						<% end %>
+					</div>
+			</div>
+		</div>
+		
+		
+<!-- *************************************** Search Side Bar **************************************** -->
+		<div class="col-sm-4" id="searchDiv">
+			<div class="panel panel-default" id="search" style="height:83%;position: fixed; overflow-y: scroll;">
+				<div class="panel-heading">Search Persons</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<p>To optimize your search rresults,provide picture of </p>
+						<p>person with a clear face to do search by picture.</p>
+						<div class="row">
+							<div class="col-md-1">
+								<div id="searchImage-holder"></div>
+							</div>		
+						</div>
+						<input id="searchImage-upload" type="file" class="btn-success"/> 
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<label>Enter Date and Time You want to search from:</label>
+							<input type="datetime-local" class="form-control" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Name:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<input type="text" class="form-control" id="Name" placeholder="Name">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Father Name:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<input type="text" class="form-control" id="FName" placeholder="Father Name(Optional)">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Age:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">1-5 years</option>
+								<option value="2">6-8 years</option>
+								<option value="3">9-12 years</option>
+								<option value="3">13-15 years</option>
+								<option value="3">16-18 years</option>
+								<option value="3">19-22 years</option>
+								<option value="3">23-25 years</option>
+								<option value="3">25-35 years</option>
+								<option value="3">35-50 years</option>
+								<option value="3">Greater than 50 years</option>
+							</select>  		
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Face Color:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Brown</option>
+								<option value="2">Light Brown</option>
+								<option value="3">Dark Brown</option>
+								<option value="3">White</option>
+								<option value="3">Black</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Gender:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Male</option>
+								<option value="2">Female</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Special Person:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Yes</option>
+								<option value="2">No</option>
+							</select>
+						</div>
+					</div><br>
+					<div class="row">
+					<center>
+						<div class="col-sm-12">
+							<span class="icon-input-btn btn-success"><span class="glyphicon glyphicon-search"></span> 
+							<input type="submit" class="btn btn-success btn-sm" value="Search"></span>
+						</div>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- ******************************************** End of Search Side Bar ******************************************* -->
+	</div>
+</div>
+

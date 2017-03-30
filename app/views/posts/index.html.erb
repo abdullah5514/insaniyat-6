@@ -1,0 +1,324 @@
+<!-- ************************************* Search Side Bar ************************************** -->
+<script>
+$(document).ready(function() 
+{
+	$("#fileUpload").on('change', function() 
+	{
+		//Get count of selected files
+		var countFiles = $(this)[0].files.length;
+		var imgPath = $(this)[0].value;
+		var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+		var image_holder = $("#image-holder");
+		image_holder.empty();
+		if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+			if (typeof(FileReader) != "undefined") {
+				//loop for each file selected for uploaded.
+				for (var i = 0; i < countFiles; i++) 
+				{
+					var reader = new FileReader();
+					reader.onload = function(e) {
+					$("<img />", {
+					"src": e.target.result,
+					"class": "thumb-image",
+					"width": "100px",
+					"height":"100px"
+					}).appendTo(image_holder);
+				}
+				image_holder.show();
+				reader.readAsDataURL($(this)[0].files[i]);
+				}
+			} else {
+				alert("This browser does not support FileReader.");
+			}
+		}else {
+			alert("Pls select only images");
+		}
+	});
+});
+</script>
+<!-- *************************************** Search Side Bar *****************************************-->
+	
+<!-- ************************************ Main Window Pics Content *********************************-->
+<div class="row" id="head">
+	<div class="col-md-8">
+		<div class="panel panel-default" style="background:#A1887F;">
+			<div class="panel-heading"><h4>Recent Missing/Found Persons</h4></div>
+				<div class="panel-body" id="panel_home_images" style="overflow-y: scroll hidden;">
+					<div class="row" id="home_images">
+						<% @posts.each do |post| %>
+							<div class="col-md-4">
+								<button id="detailpost" data-id="<%= post.id%>" data-status="<%= post.status%>" 	data-date="<%= post.requestdate%>" data-place="<%= post.place%>" data-city="<%= post.city%>" data-relation="<%= post.relation%>" data-gender="<%= post.gender%>" data-mentalstatus="<%= post.mentalstatus%>" data-age="<%= post.age%>" data-name="<%= post.name%>" data-fathername="<%= post.fathername%>" 	data-clothes="<%= post.clothes%>" data-clothescolor="<%= post.clothescolor%>"       data-description="<%= post.description%>" data-image="<%= post.image.url(:medium)%>" style="width: 90%; background-color: #A1887F;border: hidden;">
+									<figure style="width:100%;">
+										<a href="#" data-toggle="modal" data-target="#detail-window">
+											<div class="imgwrapper">
+													<%= image_tag post.image.url(:thumb), class:"img-thumbnail" ,style:"height:200px;"%>
+												<center>
+													<figcaption style="background:#333;">
+														<h4 style="text-decoration:none;">Show Detail</h4>
+													</figcaption>
+												</center>
+											</div>
+										</a>
+									</figure>
+								</button>
+							</div>
+						<% end %>
+					</div>
+				</div>
+				<center>
+				<%= will_paginate @post, renderer: BootstrapPagination::Rails %>
+				</center>
+				
+			</div>
+		</div>
+
+<!-- ***************************** Person Detail Window Code ***********************************-->
+	<div class="modal modal-fullscreen fade" id="detail-window">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Header -->
+				<div class="modal-header">
+					<center><h3 class="modal-title" style="color: #f0f0f0">Person Detail</h3></center>
+				</div>				
+				<!-- Body (form) -->
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="image_holder">
+								<%= image_tag 'img11.jpg', class:"img-responsive person-img", width:"29%", height:"26%", style:"boarder-style:solid;border-width: 0px 13px;", id:"postimage"%>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Status</label>
+							<br>
+							<label class="btn btn-default" id="status" style="width: 200px"><b>ff</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Since</label><br>
+							<label class="btn btn-default" id="date" style="width: 200px"><b>ff</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Place</label><br>
+							<label class="btn btn-default" id="place" style="width: 200px"><b>Anarkali</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">City</label><br>
+							<label class="btn btn-default" id="city" style="width: 200px"><b>Lahore</b></label>
+							<br>
+						</div>
+						<div class="col-md-4">
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Relation</label><br>
+							<label class="btn btn-default" id="relation" style="width: 200px"><b>Lahore</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Gender</label><br>
+							<label class="btn btn-default" id="gender" style="width: 200px"><b>Lahore</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Mental Status</label><br>
+							<label class="btn btn-default" id="mentalstatus" style="width: 200px"><b>Pagal</b></label>
+							<br>
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Age</label><br>
+							<label class="btn btn-default" id="age" style="width: 200px"><b>28</b></label>
+						</div>
+						<div class="col-md-4">
+								<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Name</label><br>
+								<label class="btn btn-default" id="name" style="width: 200px"><b>Faizan</b></label>
+								<br>
+								<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Father Name</label><br>
+								<label class="btn btn-default" id="fathername" style="width: 200px"><b>Unknown</b></label>
+								<br>
+								<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Clothes</label><br>
+								<label class="btn btn-default" id="clothes" style="width: 200px"><b>Pant Shirt</b></label>
+								<br>
+								<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Clothes Color</label><br>
+								<label class="btn btn-default" id="clothcolor" style="width: 200px"><b>Blue</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<label style="color: #f0f0f0; margin-top: 5px; margin-bottom: -7px;">Description</label><br>
+							<label class="btn btn-default" id="description" style="width: 86%;"><b>Shoot Him</b></label>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Submit Button (footer)-->
+				<div class="modal-footer">
+					<center>
+						<button class="btn btn-primary" data-toggle="modal" data-target="#detail-window1">Posted By</button>
+						<button class="btn btn-danger" data-dismiss="modal">Close</button>
+					</center>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!-- *********************************** End of Person Window *********************************** -->
+	
+<!-- ***************************** posted by Window Code ***********************************-->
+	<div class="modal fade" id="detail-window1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Header -->
+				<div class="modal-header">
+					<h3 class="modal-title">Posted By</h3>
+				</div>
+				<!-- Body (form) -->
+				<div class="modal-body">
+					<form role="form">
+						<div class="form-group">
+							<label>Name</label>
+							<input type="text" class="form-control" value="Ali Ahmed" readonly>
+						</div>
+						<div class="form-group">
+							<label>Phone Number</label>
+							<input type="text" class="form-control" value="03211243567" readonly>
+						</div>
+					</form>
+				</div>
+				
+				<!-- Submit Button (footer)-->
+				<div class="modal-footer">
+					<button class="btn btn-primary btn-block" data-dismiss="modal" id="closep">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- *********************************** End of Posted by Window********************************* -->
+	
+<!-- ***************************** Image Enlarge Window Code ***********************************-->
+	<div class="modal fade" id="imageEnlarge">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Header -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h3>Image</h3>
+				</div>				
+				<!-- Body (form) -->
+				<div class="modal-body">
+					<%= image_tag 'banner.jpg', class:"img-responsive", id:"imagezoomed"%>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- *********************************** End of Person Window********************************* -->
+		
+<!-- ************************************ Start of Search Side Bar *********************************** -->
+		<div class="col-sm-4" id="searchDiv">
+			<div class="panel panel-default" id="search" style="height:83%;position: fixed; overflow-y: scroll;">
+				<div class="panel-heading">Search Persons</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<p>To optimize your search rresults,provide picture of </p>
+						<p>person with a clear face to do search by picture.</p>
+						<div class="row">
+							<div class="col-md-1">
+								<div id="image-holder"></div>
+							</div>		
+						</div>
+						<input id="fileUpload" type="file" class="btn-success"/> 
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<label>Enter Date and Time You want to search from:</label>
+							<input type="datetime-local" class="form-control" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Name:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<input type="text" class="form-control" id="Name" placeholder="Name (optional)">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Father Name:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<input type="text" class="form-control" id="FName" placeholder="Father Name(Optional)">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Age:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">---- (optional)</option>
+								<option value="1">1-5 years</option>
+								<option value="2">6-8 years</option>
+								<option value="3">9-12 years</option>
+								<option value="3">13-15 years</option>
+								<option value="3">16-18 years</option>
+								<option value="3">19-22 years</option>
+								<option value="3">23-25 years</option>
+								<option value="3">25-35 years</option>
+								<option value="3">35-50 years</option>
+								<option value="3">Greater than 50 years</option>
+							</select>  		
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Face Color:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Brown</option>
+								<option value="2">Light Brown</option>
+								<option value="3">Dark Brown</option>
+								<option value="3">White</option>
+								<option value="3">Black</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Gender:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Male</option>
+								<option value="2">Female</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<label>Special Person:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<select class="form-control" id="Clothes">
+								<option value="0" selected="0">----</option>
+								<option value="1">Yes</option>
+								<option value="2">No</option>
+							</select>
+						</div>
+					</div><br>
+					<div class="row">
+					<center>
+						<div class="col-sm-12">
+							<span class="icon-input-btn btn-success"><span class="glyphicon glyphicon-search"></span> 
+							<input type="submit" class="btn btn-success btn-block" id="btn" value="Search"></span>
+						</div>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- ************************************ End of Search Side Bar *********************************** -->
+
+</div>
